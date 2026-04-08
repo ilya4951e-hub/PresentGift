@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>О нас - PerfectGift</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">Perfect<span>Gift</span></a></div>
+            <div class="nav">
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="test.html">Подбор подарка</a>
+                <a href="promotions.html">Акции</a>
+                <a href="about.html" class="active">О нас</a>
+            </div>
+            <div class="user-actions">
+                
+            </div>
+        </div>
+    </header>
+
+    <section class="about-page">
+        <div class="container">
+            <div class="about-header">
+                <h2 class="section-title">О нас</h2>
+                <p style="font-size: 18px;">PerfectGift — сервис, который помогает дарить радость с 2024 года</p>
+            </div>
+
+            <div class="about-stats">
+                <div class="stat-item" onclick="showNotification('Более 50 000 счастливых получателей подарков!')">
+                    <div class="stat-number">50 000+</div>
+                    <div>Счастливых получателей</div>
+                </div>
+                <div class="stat-item" onclick="showNotification('В нашем каталоге более 1500 товаров на любой вкус')">
+                    <div class="stat-number">1 500+</div>
+                    <div>Товаров в каталоге</div>
+                </div>
+                <div class="stat-item" onclick="showNotification('Более 200 магазинов-партнеров')">
+                    <div class="stat-number">200+</div>
+                    <div>Магазинов-партнеров</div>
+                </div>
+                <div class="stat-item" onclick="showNotification('Средний рейтинг 4.8 на основе отзывов пользователей')">
+                    <div class="stat-number">4.8</div>
+                    <div>Средний рейтинг</div>
+                </div>
+            </div>
+
+            <div class="about-mission">
+                <h3>Наша миссия</h3>
+                <p style="font-size: 18px; max-width: 800px; margin: 0 auto;">Сделать процесс выбора подарка простым и приятным, а каждый подарок — идеальным и запоминающимся</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Контакты -->
+    <section class="contact-page" style="padding-top: 0;">
+        <div class="container">
+            <h2 class="section-title">Контакты</h2>
+            
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="contact-item" onclick="copyToClipboard('г. Чебоксары, ул. Пушкина, д. 1')">
+                        <h3>📍 Адрес</h3>
+                        <p>г. Чебоксары, ул. Пушкина, д. 1</p>
+                        <p>Межрегиональный центр компетенций</p>
+                    </div>
+                    
+                    <div class="contact-item" onclick="copyToClipboard('+7 (999) 123-45-67')">
+                        <h3>📞 Телефон</h3>
+                        <p>+7 (999) 123-45-67</p>
+                        <p>+7 (8352) 78-90-12</p>
+                    </div>
+                    
+                    <div class="contact-item" onclick="copyToClipboard('info@perfectgift.ru')">
+                        <h3>✉️ Email</h3>
+                        <p>info@perfectgift.ru</p>
+                        <p>support@perfectgift.ru</p>
+                    </div>
+                    
+                    <div class="contact-item">
+                        <h3>🕒 Режим работы</h3>
+                        <p>Пн-Пт: 9:00 - 20:00</p>
+                        <p>Сб-Вс: 10:00 - 18:00</p>
+                    </div>
+                    
+                    <div class="map-placeholder" onclick="showNotification('Карта будет доступна в ближайшее время')">
+                        <div style="position:relative;overflow:hidden;"><a href="https://yandex.ru/maps/45/cheboksary/?utm_medium=mapframe&utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:0px;">Чебоксары</a><a href="https://yandex.ru/maps/45/cheboksary/house/prospekt_mira_44/YE4YdABnSUAPQFtsfX1weHRkZA==/?ll=47.277058%2C56.119870&utm_medium=mapframe&utm_source=maps&z=17.13" style="color:#eee;font-size:12px;position:absolute;top:14px;">Проспект Мира, 44 — Яндекс Карты</a><iframe src="https://yandex.ru/map-widget/v1/?ll=47.277058%2C56.119870&mode=search&ol=geo&ouri=ymapsbm1%3A%2F%2Fgeo%3Fdata%3DCgg1NjAxMzEyNhJ70KDQvtGB0YHQuNGPLCDQp9GD0LLQsNGI0YHQutCw0Y8g0KDQtdGB0L_Rg9Cx0LvQuNC60LAg4oCUINCn0YPQstCw0YjQuNGPLCDQp9C10LHQvtC60YHQsNGA0YssINC_0YDQvtGB0L_QtdC60YIg0JzQuNGA0LAsIDQ0IgoNths9QhW_emBC&z=17.13" width="560" height="400" frameborder="1" allowfullscreen="true" style="position:relative;"></iframe></div>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h2>Напишите нам</h2>
+                    <form id="contactForm" onsubmit="handleContactForm(event)">
+                        <div class="form-group">
+                            <input type="text" placeholder="Ваше имя" required id="contactName">
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="Email" required id="contactEmail">
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" placeholder="Телефон" id="contactPhone">
+                        </div>
+                        <div class="form-group">
+                            <select id="contactSubject">
+                                <option>Выберите тему</option>
+                                <option>Вопрос о сервисе</option>
+                                <option>Сотрудничество</option>
+                                <option>Техническая поддержка</option>
+                                <option>Предложение</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea placeholder="Сообщение" required id="contactMessage"></textarea>
+                        </div>
+                        <button type="submit" class="btn" style="width: 100%;">Отправить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>PerfectGift</h4>
+                    <p>Умный сервис по подбору подарков.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Навигация</h4>
+                    <a href="index.html">Главная</a>
+                    <a href="catalog.html">Каталог</a>
+                    <a href="index.html#test">Подбор подарка</a>
+                    <a href="promotions.html">Акции</a>
+                    <a href="about.html">О нас</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Документы</h4>
+                    <a href="#" onclick="showNotification('Политика конфиденциальности')">Политика конфиденциальности</a>
+                    <a href="#" onclick="showNotification('Пользовательское соглашение')">Пользовательское соглашение</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Контакты</h4>
+                    <p>info@perfectgift.ru</p>
+                    <p>+7 (999) 123-45-67</p>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2026 PerfectGift. Курсовой проект
+            </div>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
