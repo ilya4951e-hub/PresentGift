@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет - PerfectGift</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAuthButtons();
+            updateCartCount();
+            
+            const currentUser = getCurrentUser();
+            if (!currentUser || !currentUser.isLoggedIn) {
+                showNotification('Пожалуйста, войдите в аккаунт');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+                return;
+            }
+            
+            updateProfileInfo();
+            loadTab('orders');
+            
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    loadTab(this.dataset.tab);
+                });
+            });
+        });
+    </script>
+    <header>
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">Perfect<span>Gift</span></a></div>
+            <div class="nav">
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="test.html">Подбор подарка</a>
+                <a href="promotions.html">Акции</a>
+                <a href="about.html">О нас</a>
+            </div>
+            <div class="user-actions">
+                <a href="profile.html" class="login-btn">👤 Личный кабинет</a>
+                <a href="cart.html" class="cart-link">🛒<span class="cart-count" id="cartCount">0</span></a>
+            </div>
+        </div>
+    </header>
+
+    <section class="profile-page">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <div class="profile-info">
+                    <h1 id="profileName">Гость</h1>
+                    <p id="profileEmail">Не авторизован</p>
+                    <p class="member-since" id="memberSince"></p>
+                </div>
+            </div>
+
+            <div class="profile-tabs">
+                <button class="profile-tab active" data-tab="orders">📦 Мои заказы</button>
+                <button class="profile-tab" data-tab="favorites">❤️ Избранное</button>
+                <button class="profile-tab" data-tab="settings">⚙️ Настройки</button>
+                <button class="profile-tab" data-tab="addresses">📍 Адреса доставки</button>
+                <button class="profile-tab" data-tab="stats">📊 Статистика</button>
+            </div>
+
+            <div class="profile-content" id="profileContent">
+                <!-- Контент будет загружен через JS -->
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>PerfectGift</h4>
+                    <p>Умный сервис по подбору подарков. Экономьте время и дарите радость.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Навигация</h4>
+                    <a href="index.html">Главная</a>
+                    <a href="catalog.html">Каталог</a>
+                    <a href="test.html">Подбор подарка</a>
+                    <a href="promotions.html">Акции</a>
+                    <a href="about.html">О нас</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Документы</h4>
+                    <a href="#" onclick="showNotification('Политика конфиденциальности')">Политика конфиденциальности</a>
+                    <a href="#" onclick="showNotification('Пользовательское соглашение')">Пользовательское соглашение</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Контакты</h4>
+                    <p>Email: info@perfectgift.ru</p>
+                    <p>Тел: +7 (999) 123-45-67</p>
+                    <p><a href="about.html#contacts" style="color: #999;">г. Чебоксары, ул. Пушкина, 1</a></p>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2026 PerfectGift. Курсовой проект по дисциплине "Экономика отрасли"
+            </div>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Текущий пользователь (в реальном проекте бралось бы из сессии)
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || {
+            isLoggedIn: false,
+            name: 'Гость',
+            email: 'Не авторизован',
+            phone: '',
+            registeredAt: new Date().toISOString(),
+            addresses: [],
+            settings: {
+                notifications: true,
+                newsletter: false
+            }
+        };
+        
+        // Получаем заказы из localStorage
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+        
+        // Получаем избранное
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        
+        // Товары для отображения
+        const profileProducts = [
+            { id: 1, name: 'Смартфон Samsung Galaxy', category: 'Техника', price: 45990, rating: 5, image: '📱' },
+            { id: 2, name: 'Духи Chanel Chance', category: 'Красота', price: 8990, rating: 5, image: '💄' },
+            { id: 3, name: 'Умные часы Apple Watch', category: 'Техника', price: 29990, rating: 5, image: '⌚' },
+            { id: 4, name: 'Набор для выжигания', category: 'Для детей', price: 2490, rating: 4, image: '🔥' },
+            { id: 5, name: 'Портативная колонка JBL', category: 'Техника', price: 5990, rating: 5, image: '🔊' },
+            { id: 6, name: 'Сертификат в спа-салон', category: 'Развлечения', price: 5000, rating: 5, image: '💆' }
+        ];
+        
+        // Инициализация страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+            updateProfileInfo();
+            loadTab('orders');
+            
+            // Обработчики вкладок
+            document.querySelectorAll('.profile-tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    loadTab(this.dataset.tab);
+                });
+            });
+        });
+        
+        // Обновление информации профиля
+        function updateProfileInfo() {
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            if (currentUser.registeredAt && currentUser.registeredAt !== 'Не авторизован') {
+                const date = new Date(currentUser.registeredAt);
+                document.getElementById('memberSince').textContent = `На сайте с ${date.toLocaleDateString('ru-RU')}`;
+            } else {
+                document.getElementById('memberSince').textContent = '';
+            }
+            
+            // Обновляем аватар
+            const avatar = document.getElementById('profileAvatar');
+            if (currentUser.name && currentUser.name !== 'Гость') {
+                avatar.textContent = currentUser.name.charAt(0).toUpperCase();
+            } else {
+                avatar.textContent = '👤';
+            }
+        }
+        
+        // Загрузка вкладки
+        function loadTab(tabName) {
+            const content = document.getElementById('profileContent');
+            
+            switch(tabName) {
+                case 'orders':
+                    content.innerHTML = renderOrders();
+                    break;
+                case 'favorites':
+                    content.innerHTML = renderFavorites();
+                    break;
+                case 'settings':
+                    content.innerHTML = renderSettings();
+                    break;
+                case 'addresses':
+                    content.innerHTML = renderAddresses();
+                    break;
+                case 'stats':
+                    content.innerHTML = renderStats();
+                    break;
+                default:
+                    content.innerHTML = renderOrders();
+            }
+        }
+        
+        // Рендер заказов
+        function renderOrders() {
+            if (!currentUser.isLoggedIn) {
+                return `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔒</div>
+                        <h3>Требуется авторизация</h3>
+                        <p>Войдите в аккаунт, чтобы увидеть историю заказов</p>
+                        <a href="login.html" class="btn" style="margin-top: 20px;">Войти</a>
+                    </div>
+                `;
+            }
+            
+            if (orders.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <div class="empty-icon">📦</div>
+                        <h3>У вас пока нет заказов</h3>
+                        <p>Перейдите в каталог и выберите идеальный подарок</p>
+                        <a href="catalog.html" class="btn" style="margin-top: 20px;">Перейти в каталог</a>
+                    </div>
+                `;
+            }
+            
+            // Сортируем заказы по дате (новые сверху)
+            const sortedOrders = [...orders].reverse();
+            
+            return `
+                <div class="orders-list">
+                    ${sortedOrders.map(order => `
+                        <div class="order-card">
+                            <div class="order-header">
+                                <div>
+                                    <span class="order-number">Заказ №${order.orderNumber}</span>
+                                    <div class="order-date">${order.orderDate}</div>
+                                </div>
+                                <span class="order-status ${getStatusClass(order.status)}">
+                                    ${getStatusText(order.status)}
+                                </span>
+                            </div>
+                            <div class="order-items">
+                                ${order.items.map(item => `
+                                    <div class="order-item">
+                                        <div class="order-item-image">${item.image || '🎁'}</div>
+                                        <div class="order-item-details">
+                                            <div class="order-item-name">${item.name}</div>
+                                            <div class="order-item-price">${item.price.toLocaleString()} ₽</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="order-total">
+                                Итого: ${order.items.reduce((sum, item) => sum + item.price, 0).toLocaleString()} ₽
+                            </div>
+                            <div class="order-actions">
+                                <button onclick="repeatOrder('${order.orderNumber}')">🔄 Повторить заказ</button>
+                                <button onclick="trackOrder('${order.orderNumber}')">📍 Отследить</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Рендер избранного
+        function renderFavorites() {
+            if (favorites.length === 0) {
+                return `
+                    <div class="empty-state">
+                        <div class="empty-icon">❤️</div>
+                        <h3>Избранное пусто</h3>
+                        <p>Добавляйте товары в избранное, чтобы не потерять их</p>
+                        <a href="catalog.html" class="btn" style="margin-top: 20px;">Перейти в каталог</a>
+                    </div>
+                `;
+            }
+            
+            const favoriteProducts = profileProducts.filter(p => favorites.includes(p.id));
+            
+            return `
+                <div class="favorites-grid">
+                    ${favoriteProducts.map(product => `
+                        <div class="product-card">
+                            <a href="product.html?id=${product.id}" class="product-image">${product.image}</a>
+                            <div class="product-info">
+                                <div class="product-category">${product.category}</div>
+                                <div class="product-title"><a href="product.html?id=${product.id}">${product.name}</a></div>
+                                <div class="product-price">${product.price.toLocaleString()} ₽</div>
+                                <div class="product-actions">
+                                    <button class="add-to-cart" onclick="addToCart(${product.id})">В корзину</button>
+                                    <button class="favorite-btn active" onclick="toggleFavorite(${product.id})">❤️</button>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        
+        // Рендер настроек
+        function renderSettings() {
+            return `
+                <form class="settings-form" onsubmit="saveSettings(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Имя</label>
+                            <input type="text" id="settingsName" value="${currentUser.name !== 'Гость' ? currentUser.name : ''}" ${!currentUser.isLoggedIn ? 'disabled' : ''}>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="settingsEmail" value="${currentUser.email !== 'Не авторизован' ? currentUser.email : ''}" ${!currentUser.isLoggedIn ? 'disabled' : ''}>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Телефон</label>
+                        <input type="tel" id="settingsPhone" value="${currentUser.phone || ''}" placeholder="+7 (999) 123-45-67" ${!currentUser.isLoggedIn ? 'disabled' : ''}>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Пароль</label>
+                        <input type="password" id="settingsPassword" placeholder="Новый пароль" ${!currentUser.isLoggedIn ? 'disabled' : ''}>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Подтверждение пароля</label>
+                        <input type="password" id="settingsPasswordConfirm" placeholder="Подтвердите пароль" ${!currentUser.isLoggedIn ? 'disabled' : ''}>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="settingsNotifications" ${currentUser.settings?.notifications ? 'checked' : ''} ${!currentUser.isLoggedIn ? 'disabled' : ''}>
+                        <label>Получать уведомления о статусе заказа</label>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="settingsNewsletter" ${currentUser.settings?.newsletter ? 'checked' : ''} ${!currentUser.isLoggedIn ? 'disabled' : ''}>
+                        <label>Получать новости о скидках и акциях</label>
+                    </div>
+                    
+                    ${!currentUser.isLoggedIn ? `
+                        <div style="text-align: center; padding: 20px;">
+                            <p style="color: #999; margin-bottom: 15px;">Для изменения настроек необходимо войти в аккаунт</p>
+                            <a href="login.html" class="btn">Войти</a>
+                            <a href="register.html" class="btn btn-outline" style="background: transparent; border: 2px solid #667eea; color: #667eea; margin-left: 10px;">Зарегистрироваться</a>
+                        </div>
+                    ` : `
+                        <button type="submit" class="save-btn">Сохранить изменения</button>
+                    `}
+                </form>
+            `;
+        }
+        
+        // Рендер адресов доставки
+        function renderAddresses() {
+            const addresses = currentUser.addresses || [];
+            
+            if (!currentUser.isLoggedIn) {
+                return `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔒</div>
+                        <h3>Требуется авторизация</h3>
+                        <p>Войдите в аккаунт, чтобы управлять адресами доставки</p>
+                        <a href="login.html" class="btn" style="margin-top: 20px;">Войти</a>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="addresses-list">
+                    ${addresses.map((address, index) => `
+                        <div class="address-card ${address.isDefault ? 'default' : ''}">
+                            <div class="address-info">
+                                <p><strong>${address.name || 'Получатель'}</strong></p>
+                                <p>${address.city}, ${address.street}, д. ${address.house}${address.apartment ? `, кв. ${address.apartment}` : ''}</p>
+                                <p>${address.phone || currentUser.phone || 'Телефон не указан'}</p>
+                                ${address.isDefault ? '<span class="address-default-badge">По умолчанию</span>' : ''}
+                            </div>
+                            <div class="address-actions">
+                                ${!address.isDefault ? `<button onclick="setDefaultAddress(${index})">Сделать основным</button>` : ''}
+                                <button onclick="deleteAddress(${index})">🗑️</button>
+                            </div>
+                        </div>
+                    `).join('')}
+                    
+                    <button class="add-address-btn" onclick="addNewAddress()">
+                        + Добавить новый адрес
+                    </button>
+                </div>
+            `;
+        }
+        
+        // Рендер статистики
+        function renderStats() {
+            const totalOrders = orders.length;
+            const totalSpent = orders.reduce((sum, order) => sum + order.items.reduce((s, item) => s + item.price, 0), 0);
+            const favoriteCategory = getFavoriteCategory();
+            const averageOrder = totalOrders > 0 ? totalSpent / totalOrders : 0;
+            
+            return `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${totalOrders}</div>
+                        <div class="stat-label">Всего заказов</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${totalSpent.toLocaleString()} ₽</div>
+                        <div class="stat-label">Потрачено всего</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${Math.round(averageOrder).toLocaleString()} ₽</div>
+                        <div class="stat-label">Средний чек</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${favoriteCategory}</div>
+                        <div class="stat-label">Любимая категория</div>
+                    </div>
+                </div>
+                
+                ${!currentUser.isLoggedIn ? `
+                    <div class="empty-state">
+                        <div class="empty-icon">🔒</div>
+                        <h3>Требуется авторизация</h3>
+                        <p>Войдите в аккаунт, чтобы увидеть статистику</p>
+                        <a href="login.html" class="btn" style="margin-top: 20px;">Войти</a>
+                    </div>
+                ` : ''}
+            `;
+        }
+        
+        // Вспомогательные функции
+        function getStatusClass(status) {
+            switch(status) {
+                case 'delivered': return 'status-delivered';
+                case 'processing': return 'status-processing';
+                case 'shipped': return 'status-shipped';
+                case 'cancelled': return 'status-cancelled';
+                default: return 'status-processing';
+            }
+        }
+        
+        function getStatusText(status) {
+            switch(status) {
+                case 'delivered': return 'Доставлен';
+                case 'processing': return 'В обработке';
+                case 'shipped': return 'Отправлен';
+                case 'cancelled': return 'Отменен';
+                default: return 'В обработке';
+            }
+        }
+        
+        function getFavoriteCategory() {
+            const categoryCount = {};
+            orders.forEach(order => {
+                order.items.forEach(item => {
+                    const category = item.category || 'Другое';
+                    categoryCount[category] = (categoryCount[category] || 0) + 1;
+                });
+            });
+            
+            let maxCategory = 'Нет';
+            let maxCount = 0;
+            for (const [category, count] of Object.entries(categoryCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    maxCategory = category;
+                }
+            }
+            return maxCategory;
+        }
+        
+        // Функции для взаимодействия
+        window.repeatOrder = function(orderNumber) {
+            const order = orders.find(o => o.orderNumber === orderNumber);
+            if (order) {
+                order.items.forEach(item => {
+                    const product = profileProducts.find(p => p.name === item.name);
+                    if (product) {
+                        addToCart(product.id);
+                    }
+                });
+                showNotification('Товары из заказа добавлены в корзину');
+                setTimeout(() => {
+                    window.location.href = 'cart.html';
+                }, 1500);
+            }
+        };
+        
+        window.trackOrder = function(orderNumber) {
+            showNotification(`Заказ №${orderNumber} находится в пути. Ожидайте доставку в ближайшее время.`);
+        };
+        
+        window.setDefaultAddress = function(index) {
+            if (currentUser.addresses) {
+                currentUser.addresses.forEach((addr, i) => {
+                    addr.isDefault = (i === index);
+                });
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                loadTab('addresses');
+                showNotification('Основной адрес изменен');
+            }
+        };
+        
+        window.deleteAddress = function(index) {
+            if (confirm('Удалить этот адрес?')) {
+                currentUser.addresses.splice(index, 1);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                loadTab('addresses');
+                showNotification('Адрес удален');
+            }
+        };
+        
+        window.addNewAddress = function() {
+            const city = prompt('Введите город:');
+            const street = prompt('Введите улицу:');
+            const house = prompt('Введите номер дома:');
+            const apartment = prompt('Введите номер квартиры (необязательно):');
+            
+            if (city && street && house) {
+                if (!currentUser.addresses) currentUser.addresses = [];
+                currentUser.addresses.push({
+                    city, street, house, apartment,
+                    isDefault: currentUser.addresses.length === 0,
+                    phone: currentUser.phone
+                });
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                loadTab('addresses');
+                showNotification('Адрес добавлен');
+            }
+        };
+        
+        window.saveSettings = function(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('settingsName').value;
+            const email = document.getElementById('settingsEmail').value;
+            const phone = document.getElementById('settingsPhone').value;
+            const password = document.getElementById('settingsPassword').value;
+            const passwordConfirm = document.getElementById('settingsPasswordConfirm').value;
+            const notifications = document.getElementById('settingsNotifications').checked;
+            const newsletter = document.getElementById('settingsNewsletter').checked;
+            
+            if (password && password !== passwordConfirm) {
+                showNotification('Пароли не совпадают');
+                return;
+            }
+            
+            currentUser.name = name;
+            currentUser.email = email;
+            currentUser.phone = phone;
+            currentUser.settings = { notifications, newsletter };
+            
+            if (password) {
+                currentUser.password = password;
+            }
+            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            updateProfileInfo();
+            showNotification('Настройки сохранены');
+        };
+    </script>
+</body>
+</html>

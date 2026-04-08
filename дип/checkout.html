@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа - PerfectGift</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">Perfect<span>Gift</span></a></div>
+            <div class="nav">
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="index.html#test">Подбор подарка</a>
+                <a href="promotions.html">Акции</a>
+                <a href="about.html">О нас</a>
+            </div>
+            <div class="user-actions">
+                
+            </div>
+        </div>
+    </header>
+
+    <section class="checkout-page">
+        <div class="container">
+            <h2 class="section-title">Оформление заказа</h2>
+            
+            <div class="checkout-container" id="checkoutContainer">
+                
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>PerfectGift</h4>
+                    <p>Умный сервис по подбору подарков.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Навигация</h4>
+                    <a href="index.html">Главная</a>
+                    <a href="catalog.html">Каталог</a>
+                    <a href="index.html#test">Подбор подарка</a>
+                    <a href="promotions.html">Акции</a>
+                    <a href="about.html">О нас</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Документы</h4>
+                    <a href="#" onclick="showNotification('Политика конфиденциальности')">Политика конфиденциальности</a>
+                    <a href="#" onclick="showNotification('Пользовательское соглашение')">Пользовательское соглашение</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Контакты</h4>
+                    <p>info@perfectgift.ru</p>
+                    <p>+7 (999) 123-45-67</p>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2026 PerfectGift. Курсовой проект
+            </div>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initCheckoutPage();
+        });
+
+        function initCheckoutPage() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const checkoutContainer = document.getElementById('checkoutContainer');
+            
+            if (cart.length === 0) {
+                showNotification('Корзина пуста. Перенаправляем в каталог...');
+                setTimeout(() => {
+                    window.location.href = 'catalog.html';
+                }, 1500);
+                return;
+            }
+
+            let subtotal = 0;
+            cart.forEach(item => {
+                subtotal += item.price;
+            });
+            
+            const deliveryCost = subtotal > 5000 ? 0 : 350;
+            const total = subtotal + deliveryCost;
+
+            checkoutContainer.innerHTML = `
+                <div class="checkout-steps">
+                    <div class="checkout-steps-indicator">
+                        <div class="step active">1. Корзина</div>
+                        <div class="step active">2. Оформление</div>
+                        <div class="step">3. Завершение</div>
+                    </div>
+                </div>
+                
+                <div class="checkout-grid">
+                    <!-- Форма оформления -->
+                    <div class="checkout-form">
+                        <h3>Контактные данные</h3>
+                        
+                        <form id="checkoutForm" onsubmit="submitOrder(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Имя *</label>
+                                    <input type="text" id="checkoutFirstName" placeholder="Иван" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Фамилия *</label>
+                                    <input type="text" id="checkoutLastName" placeholder="Петров" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Email *</label>
+                                <input type="email" id="checkoutEmail" placeholder="ivan@example.com" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Телефон *</label>
+                                <input type="tel" id="checkoutPhone" placeholder="+7 (999) 123-45-67" required>
+                            </div>
+                            
+                            <h3 style="margin-top: 30px;">Способ доставки</h3>
+                            
+                            <div class="delivery-options">
+                                <div class="delivery-option" onclick="selectDelivery('courier')">
+                                    <input type="radio" name="delivery" id="deliveryCourier" value="courier" checked>
+                                    <div class="delivery-option-content">
+                                        <div class="delivery-option-header">
+                                            <span class="delivery-option-title">Курьером</span>
+                                            <span class="delivery-option-price">${deliveryCost === 0 ? 'Бесплатно' : '350 ₽'}</span>
+                                        </div>
+                                        <div class="delivery-option-desc">Доставка курьером до двери. Срок: 1-3 дня</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="delivery-option" onclick="selectDelivery('pickup')">
+                                    <input type="radio" name="delivery" id="deliveryPickup" value="pickup">
+                                    <div class="delivery-option-content">
+                                        <div class="delivery-option-header">
+                                            <span class="delivery-option-title">Самовывоз</span>
+                                            <span class="delivery-option-price">Бесплатно</span>
+                                        </div>
+                                        <div class="delivery-option-desc">г. Чебоксары, ул. Пушкина, д. 1 (Межрегиональный центр компетенций)</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="delivery-option" onclick="selectDelivery('post')">
+                                    <input type="radio" name="delivery" id="deliveryPost" value="post">
+                                    <div class="delivery-option-content">
+                                        <div class="delivery-option-header">
+                                            <span class="delivery-option-title">Почта России</span>
+                                            <span class="delivery-option-price">от 400 ₽</span>
+                                        </div>
+                                        <div class="delivery-option-desc">Доставка почтой по всей России. Срок: 5-14 дней</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="deliveryAddress" style="display: none;">
+                                <h3 style="margin-top: 30px;">Адрес доставки</h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Город *</label>
+                                        <input type="text" id="checkoutCity" placeholder="Москва">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Улица *</label>
+                                        <input type="text" id="checkoutStreet" placeholder="ул. Пушкина">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Дом *</label>
+                                        <input type="text" id="checkoutHouse" placeholder="1">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Квартира</label>
+                                        <input type="text" id="checkoutApartment" placeholder="42">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Индекс</label>
+                                        <input type="text" id="checkoutZip" placeholder="123456">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h3 style="margin-top: 30px;">Способ оплаты</h3>
+                            
+                            <div class="payment-options">
+                                <div class="payment-option" onclick="selectPayment('card')">
+                                    <input type="radio" name="payment" id="paymentCard" value="card" checked>
+                                    <div class="payment-option-content">
+                                        <span class="payment-option-icon">💳</span>
+                                        <div>
+                                            <div class="payment-option-title">Банковской картой</div>
+                                            <div class="payment-option-desc">Visa, MasterCard, МИР</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="payment-option" onclick="selectPayment('cash')">
+                                    <input type="radio" name="payment" id="paymentCash" value="cash">
+                                    <div class="payment-option-content">
+                                        <span class="payment-option-icon">💵</span>
+                                        <div>
+                                            <div class="payment-option-title">Наличными при получении</div>
+                                            <div class="payment-option-desc">Оплата курьеру наличными</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="payment-option" onclick="selectPayment('online')">
+                                    <input type="radio" name="payment" id="paymentOnline" value="online">
+                                    <div class="payment-option-content">
+                                        <span class="payment-option-icon">🏦</span>
+                                        <div>
+                                            <div class="payment-option-title">Электронные кошельки</div>
+                                            <div class="payment-option-desc">ЮMoney, WebMoney, QIWI</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h3 style="margin-top: 30px;">Комментарий к заказу</h3>
+                            
+                            <div class="form-group">
+                                <textarea id="checkoutComment" placeholder="Пожелания по доставке, цвет упаковки и т.д." rows="3"></textarea>
+                            </div>
+                            
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <label for="agreeTerms">Я согласен с <a href="#" onclick="showNotification('Пользовательское соглашение')">условиями</a> обработки персональных данных и пользовательским соглашением *</label>
+                            </div>
+                            
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" id="subscribeNews">
+                                <label for="subscribeNews">Хочу получать новости о скидках и акциях</label>
+                            </div>
+                            
+                            <button type="submit" class="btn submit-order-btn">Подтвердить заказ</button>
+                        </form>
+                    </div>
+                    
+                    <!-- Сводка заказа -->
+                    <div class="order-summary">
+                        <h3>Ваш заказ</h3>
+                        
+                        <div class="order-items" id="orderItems">
+                            <!-- Товары из корзины -->
+                        </div>
+                        
+                        <div class="summary-divider"></div>
+                        
+                        <div class="summary-row">
+                            <span>Товары (${cart.length})</span>
+                            <span>${subtotal.toLocaleString()} ₽</span>
+                        </div>
+                        
+                        <div class="summary-row" id="deliveryRow">
+                            <span>Доставка</span>
+                            <span>${deliveryCost === 0 ? 'Бесплатно' : deliveryCost.toLocaleString() + ' ₽'}</span>
+                        </div>
+                        
+                        <div class="summary-row promo-row">
+                            <span>Промокод</span>
+                            <div class="promo-input-group">
+                                <input type="text" id="promoCodeInput" placeholder="Введите промокод">
+                                <button class="promo-apply-btn" onclick="applyPromoCode()">Применить</button>
+                            </div>
+                        </div>
+                        
+                        <div class="summary-row promo-discount" id="promoDiscountRow" style="display: none;">
+                            <span>Скидка по промокоду</span>
+                            <span id="promoDiscountAmount">-0 ₽</span>
+                        </div>
+                        
+                        <div class="summary-row total">
+                            <span>Итого</span>
+                            <span id="totalAmount">${total.toLocaleString()} ₽</span>
+                        </div>
+                        
+                        <div class="payment-security">
+                            <div class="security-icon">🔒</div>
+                            <div class="security-text">
+                                <strong>Безопасная оплата</strong>
+                                <span>Ваши платежные данные защищены</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+                const orderItems = document.getElementById('orderItems');
+            orderItems.innerHTML = cart.map(item => `
+                <div class="order-item">
+                    <div class="order-item-image">
+                        <img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.parentElement.innerHTML='${getEmojiForCategory(item.category)}'; this.parentElement.style.fontSize='32px'; this.parentElement.style.display='flex'; this.parentElement.style.alignItems='center'; this.parentElement.style.justifyContent='center';">
+                    </div>
+                    <div class="order-item-info">
+                        <div class="order-item-title"><a href="product.html?id=${item.id}">${item.name}</a></div>
+                        <div class="order-item-price">${item.price.toLocaleString()} ₽</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.selectDelivery = function(type) {
+            document.getElementById('deliveryCourier').checked = (type === 'courier');
+            document.getElementById('deliveryPickup').checked = (type === 'pickup');
+            document.getElementById('deliveryPost').checked = (type === 'post');
+            
+            const addressBlock = document.getElementById('deliveryAddress');
+            if (type === 'courier') {
+                addressBlock.style.display = 'block';
+                document.getElementById('checkoutCity').required = true;
+                document.getElementById('checkoutStreet').required = true;
+                document.getElementById('checkoutHouse').required = true;
+            } else {
+                addressBlock.style.display = 'none';
+                document.getElementById('checkoutCity').required = false;
+                document.getElementById('checkoutStreet').required = false;
+                document.getElementById('checkoutHouse').required = false;
+            }
+        };
+
+        window.selectPayment = function(type) {
+            document.getElementById('paymentCard').checked = (type === 'card');
+            document.getElementById('paymentCash').checked = (type === 'cash');
+            document.getElementById('paymentOnline').checked = (type === 'online');
+        };
+
+        window.applyPromoCode = function() {
+            const promoInput = document.getElementById('promoCodeInput');
+            const promoCode = promoInput.value.trim().toUpperCase();
+            
+            const validPromos = {
+                'GIFT15': 15, 
+                'WELCOME10': 10, 
+                'FREEDELIVERY': 'delivery' 
+            };
+            
+            if (validPromos.hasOwnProperty(promoCode)) {
+                if (promoCode === 'FREEDELIVERY') {
+                    const deliveryRow = document.getElementById('deliveryRow');
+                    const deliverySpan = deliveryRow.querySelector('span:last-child');
+                    deliverySpan.textContent = 'Бесплатно (промокод)';
+                    
+                    const totalElement = document.getElementById('totalAmount');
+                    const currentTotal = parseInt(totalElement.textContent.replace(/[^\d]/g, ''));
+                    const deliveryCost = 350; 
+                    totalElement.textContent = (currentTotal - deliveryCost).toLocaleString() + ' ₽';
+                    
+                    showNotification('Промокод применен! Доставка бесплатно');
+                } else {
+                    const discountPercent = validPromos[promoCode];
+                    
+                    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+                    const subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+                    
+                    const discountAmount = Math.round(subtotal * discountPercent / 100);
+                    
+                    const discountRow = document.getElementById('promoDiscountRow');
+                    discountRow.style.display = 'flex';
+                    document.getElementById('promoDiscountAmount').textContent = `-${discountAmount.toLocaleString()} ₽`;
+                    
+                    const deliveryCost = document.getElementById('deliveryRow').querySelector('span:last-child').textContent.includes('Бесплатно') ? 0 : 350;
+                    const total = subtotal - discountAmount + deliveryCost;
+                    document.getElementById('totalAmount').textContent = total.toLocaleString() + ' ₽';
+                    
+                    showNotification(`Промокод применен! Скидка ${discountPercent}%`);
+                }
+                
+                promoInput.disabled = true;
+                document.querySelector('.promo-apply-btn').disabled = true;
+            } else {
+                showNotification('Неверный промокод');
+            }
+        };
+
+        window.submitOrder = function(event) {
+            event.preventDefault();
+            
+            const firstName = document.getElementById('checkoutFirstName').value;
+            const lastName = document.getElementById('checkoutLastName').value;
+            const email = document.getElementById('checkoutEmail').value;
+            const phone = document.getElementById('checkoutPhone').value;
+            
+            let deliveryMethod = 'Курьером';
+            let deliveryAddress = '';
+            
+            if (document.getElementById('deliveryCourier').checked) {
+                const city = document.getElementById('checkoutCity').value;
+                const street = document.getElementById('checkoutStreet').value;
+                const house = document.getElementById('checkoutHouse').value;
+                const apartment = document.getElementById('checkoutApartment').value;
+                const zip = document.getElementById('checkoutZip').value;
+                
+                deliveryAddress = `${city}, ${street}, д. ${house}`;
+                if (apartment) deliveryAddress += `, кв. ${apartment}`;
+                if (zip) deliveryAddress += `, индекс ${zip}`;
+            } else if (document.getElementById('deliveryPickup').checked) {
+                deliveryMethod = 'Самовывоз';
+                deliveryAddress = 'г. Чебоксары, ул. Пушкина, д. 1';
+            } else if (document.getElementById('deliveryPost').checked) {
+                deliveryMethod = 'Почта России';
+                const city = document.getElementById('checkoutCity').value;
+                const street = document.getElementById('checkoutStreet').value;
+                const house = document.getElementById('checkoutHouse').value;
+                deliveryAddress = `${city}, ${street}, д. ${house}`;
+            }
+            
+            let paymentMethod = 'Картой онлайн';
+            if (document.getElementById('paymentCard').checked) paymentMethod = 'Картой онлайн';
+            else if (document.getElementById('paymentCash').checked) paymentMethod = 'Наличными при получении';
+            else if (document.getElementById('paymentOnline').checked) paymentMethod = 'Электронными деньгами';
+            
+            const comment = document.getElementById('checkoutComment').value;
+            
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            
+            const orderData = {
+                customer: {
+                    firstName,
+                    lastName,
+                    email,
+                    phone
+                },
+                delivery: {
+                    method: deliveryMethod,
+                    address: deliveryAddress
+                },
+                payment: paymentMethod,
+                comment,
+                items: cart,
+                orderDate: new Date().toLocaleString('ru-RU'),
+                orderNumber: 'PG' + Date.now().toString().slice(-8)
+            };
+            
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            orders.push(orderData);
+            localStorage.setItem('orders', JSON.stringify(orders));
+            
+            localStorage.setItem('cart', JSON.stringify([]));
+            
+            showNotification(`Заказ №${orderData.orderNumber} оформлен! Мы отправили подтверждение на ${email}`, 5000);
+            
+            setTimeout(() => {
+                window.location.href = `order-confirmation.html?order=${orderData.orderNumber}`;
+            }, 2000);
+        };
+    </script>
+</body>
+</html>

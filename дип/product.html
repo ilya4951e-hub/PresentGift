@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Товар - PerfectGift</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">Perfect<span>Gift</span></a></div>
+            <div class="nav">
+                <a href="index.html">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="index.html#test">Подбор подарка</a>
+                <a href="promotions.html">Акции</a>
+                <a href="about.html">О нас</a>
+            </div>
+            <div class="user-actions">
+                
+            </div>
+        </div>
+    </header>
+
+    <section class="product-page">
+        <div class="container">
+            <div class="product-detail" id="productDetail">
+                
+            </div>
+            <div class="similar-products-section">
+                <h3 class="section-title">Похожие товары</h3>
+                <div class="catalog-grid" id="similarProducts">
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>PerfectGift</h4>
+                    <p>Умный сервис по подбору подарков.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Навигация</h4>
+                    <a href="index.html">Главная</a>
+                    <a href="catalog.html">Каталог</a>
+                    <a href="index.html#test">Подбор подарка</a>
+                    <a href="promotions.html">Акции</a>
+                    <a href="about.html">О нас</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Документы</h4>
+                    <a href="#" onclick="showNotification('Политика конфиденциальности')">Политика конфиденциальности</a>
+                    <a href="#" onclick="showNotification('Пользовательское соглашение')">Пользовательское соглашение</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Контакты</h4>
+                    <p>info@perfectgift.ru</p>
+                    <p>+7 (999) 123-45-67</p>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2026 PerfectGift. Курсовой проект
+            </div>
+        </div>
+    </footer>
+
+    <div class="notification" id="notification"></div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Отображение похожих товаров
+        const similarGrid = document.getElementById('similarProducts');
+        if (similarGrid) {
+            const similarProducts = products.slice(0, 4);
+            similarGrid.innerHTML = similarProducts.map(product => `
+                <div class="product-card">
+                    <a href="product.html?id=${product.id}" class="product-image">
+                        <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='📷'">
+                    </a>
+                    <div class="product-info">
+                        <div class="product-category">${product.category}</div>
+                        <div class="product-title"><a href="product.html?id=${product.id}">${product.name}</a></div>
+                        <div class="product-price">${product.price.toLocaleString()} ₽</div>
+                        <div class="product-rating">${'★'.repeat(product.rating)}${'☆'.repeat(5-product.rating)}</div>
+                        <button class="add-to-cart" onclick="addToCart(${product.id})">В корзину</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+    });
+</script>
+</body>
+</html>

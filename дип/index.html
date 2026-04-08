@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PerfectGift - умный подбор подарков</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="container header-content">
+            <div class="logo"><a href="index.html">Perfect<span>Gift</span></a></div>
+            <div class="nav">
+                <a href="index.html" class="active">Главная</a>
+                <a href="catalog.html">Каталог</a>
+                <a href="test.html">Подбор подарка</a>
+                <a href="promotions.html">Акции</a>
+                <a href="about.html">О нас</a>
+            </div>
+            <div class="user-actions">
+                
+            </div>
+        </div>
+    </header>
+
+    <!-- Герой-секция -->
+    <section class="hero">
+        <div class="container">
+            <h1>Идеальный подарок за 5 минут</h1>
+            <p>Персонализированный сервис по подбору подарков на основе искусственного интеллекта и анализа предпочтений</p>
+            <a href="test.html" class="btn" onclick="scrollToSection('test')">Пройти тест и получить подборку</a>
+            <a href="catalog.html" class="btn btn-outline">Смотреть каталог</a>
+        </div>
+    </section>
+
+    <!-- Проблема -->
+    <section class="problem">
+        <div class="container">
+            <h2 class="section-title">Проблема выбора подарка</h2>
+            <div class="problem-content">
+                <div class="problem-text">
+                    <h3>Знакомая ситуация?</h3>
+                    <ul>
+                        <li onclick="showNotification('Часы поиска в интернете без результата - мы решим это!')">Часы поиска в интернете без результата</li>
+                        <li onclick="showNotification('Страх подарить ненужную вещь - наши алгоритмы учтут все предпочтения')">Страх подарить ненужную вещь</li>
+                        <li onclick="showNotification('Огромный ассортимент и паралич выбора - мы отфильтруем лишнее')">Огромный ассортимент и "паралич выбора"</li>
+                        <li onclick="showNotification('Разрозненные идеи без возможности покупки - у нас всё в одном месте')">Разрозненные идеи без возможности покупки</li>
+                    </ul>
+                </div>
+                <div class="problem-image" onclick="showNotification('Давайте вместе найдем идеальный подарок!')">
+                    <img src="assets/images/present-icon.png">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Как это работает -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Как работает PerfectGift</h2>
+            <div class="steps">
+                <div class="step" onclick="showNotification('Шаг 1: Ответьте на несколько вопросов о получателе')">
+                    <div class="step-number">1</div>
+                    <h3>Ответьте на вопросы</h3>
+                    <p>Пройдите быстрый квиз о получателе: возраст, интересы, бюджет, событие</p>
+                </div>
+                <div class="step" onclick="showNotification('Шаг 2: Мы подберем идеальные варианты')">
+                    <div class="step-number">2</div>
+                    <h3>Получите рекомендации</h3>
+                    <p>ИИ-алгоритмы подберут персонализированные варианты подарков</p>
+                </div>
+                <div class="step" onclick="showNotification('Шаг 3: Купите в один клик!')">
+                    <div class="step-number">3</div>
+                    <h3>Купите в один клик</h3>
+                    <p>Перейдите в магазин партнера и оформите покупку сразу</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Преимущества -->
+    <section class="advantages">
+        <div class="container">
+            <h2 class="section-title">Наши преимущества</h2>
+            
+            <div class="advantages-grid">
+                <div class="advantage-item" onclick="showNotification('Искусственный интеллект подбирает подарки с точностью 95%')">
+                    <div class="advantage-icon"><img src="assets/images/robot-icon.png" alt="Искусственный интеллект" style="width: 32px; height: 32px;"></div>
+                    <div class="advantage-text">
+                        <h3>Искусственный интеллект</h3>
+                        <p>Алгоритмы машинного обучения для точных рекомендаций</p>
+                    </div>
+                </div>
+                <div class="advantage-item" onclick="showNotification('Интеграция с Wildberries, Ozon, Яндекс.Маркет и другими')">
+                    <div class="advantage-icon"><img src="assets/images/pack-icon.png" alt="Интеграция с маркетплейсами" style="width: 32px; height: 32px;"></div>
+                    <div class="advantage-text">
+                        <h3>Интеграция с топ-маркетплейсами</h3>
+                        <p>Wildberries, Ozon, Яндекс.Маркет и другие</p>
+                    </div>
+                </div>
+                <div class="advantage-item" onclick="showNotification('Среднее время подбора подарка - 5 минут')">
+                    <div class="advantage-icon"><img src="assets/images/light-icon.png" alt="Экономия времени" style="width: 32px; height: 32px;"></div>
+                    <div class="advantage-text">
+                        <h3>Экономия времени</h3>
+                        <p>От квиза до покупки — 5 минут</p>
+                    </div>
+                </div>
+                <div class="advantage-item" onclick="showNotification('Учитываем возраст, интересы, хобби, бюджет и повод')">
+                    <div class="advantage-icon">💎</div>
+                    <div class="advantage-text">
+                        <h3>Персонализация</h3>
+                        <p>Учет более 50 параметров получателя</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Товары для главной (популярные) -->
+    <section class="catalog-page" style="padding-top: 0;">
+        <div class="container">
+            <h2 class="section-title">Популярные подарки</h2>
+            
+            <div class="catalog-grid" id="popularProducts">
+                <!-- JS заполнит популярные товары -->
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="catalog.html" class="btn">Смотреть все товары</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>PerfectGift</h4>
+                    <p>Умный сервис по подбору подарков. Экономьте время и дарите радость.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Навигация</h4>
+                    <a href="index.html">Главная</a>
+                    <a href="catalog.html">Каталог</a>
+                    <a href="index.html#test">Подбор подарка</a>
+                    <a href="promotions.html">Акции</a>
+                    <a href="about.html">О нас</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Документы</h4>
+                    <a href="#" onclick="showNotification('Политика конфиденциальности')">Политика конфиденциальности</a>
+                    <a href="#" onclick="showNotification('Пользовательское соглашение')">Пользовательское соглашение</a>
+                    <a href="#" onclick="showNotification('Презентация проекта')">Презентация проекта</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Контакты</h4>
+                    <p>Email: info@perfectgift.ru</p>
+                    <p>Тел: +7 (999) 123-45-67</p>
+                    <p>г. Чебоксары, ул. Пушкина, 1</p>
+                </div>
+            </div>
+            <div class="copyright">
+                © 2026 PerfectGift. Курсовой проект по дисциплине "Экономика отрасли"
+            </div>
+        </div>
+    </footer>
+
+    <!-- Уведомление -->
+    <div class="notification" id="notification"></div>
+
+    <script src="assets/js/main.js"></script>
+<script>
+    // Дополнительный код для главной страницы
+    document.addEventListener('DOMContentLoaded', function() {
+        // Показываем популярные товары на главной
+        const popularGrid = document.getElementById('popularProducts');
+        if (popularGrid) {
+            // Ждем загрузки products из main.js
+            setTimeout(function() {
+                if (typeof products !== 'undefined' && products.length > 0) {
+                    const popularProducts = products.slice(0, 4);
+                    popularGrid.innerHTML = popularProducts.map(product => `
+                        <div class="product-card">
+                            <a href="product.html?id=${product.id}" class="product-image">
+                                <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.onerror=null; this.parentElement.innerHTML='📷'; this.parentElement.style.fontSize='48px'; this.parentElement.style.display='flex'; this.parentElement.style.alignItems='center'; this.parentElement.style.justifyContent='center';">
+                            </a>
+                            <div class="product-info">
+                                <div class="product-category">${product.category}</div>
+                                <div class="product-title"><a href="product.html?id=${product.id}">${product.name}</a></div>
+                                <div class="product-price">${product.price.toLocaleString()} ₽</div>
+                                <div class="product-rating">${'★'.repeat(product.rating)}${'☆'.repeat(5-product.rating)}</div>
+                                <button class="add-to-cart" onclick="addToCart(${product.id})">В корзину</button>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    // Если products еще не загружен, используем fallback
+                    console.log('Products not loaded yet, using fallback');
+                    const fallbackProducts = [
+                        { id: 1, name: 'Смартфон Samsung Galaxy', category: 'Техника', price: 45990, rating: 5, image: 'assets/images/phone.webp' },
+                        { id: 2, name: 'Духи Chanel Chance', category: 'Красота', price: 8990, rating: 5, image: 'assets/images/chanel.webp' },
+                        { id: 3, name: 'Умные часы Apple Watch', category: 'Техника', price: 29990, rating: 5, image: 'assets/images/watch.jpg' },
+                        { id: 4, name: 'Набор для выжигания', category: 'Для детей', price: 2490, rating: 4, image: 'assets/images/wood.webp' }
+                    ];
+                    popularGrid.innerHTML = fallbackProducts.map(product => `
+                        <div class="product-card">
+                            <a href="product.html?id=${product.id}" class="product-image">
+                                <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.parentElement.innerHTML='📷'; this.parentElement.style.fontSize='48px'; this.parentElement.style.display='flex'; this.parentElement.style.alignItems='center'; this.parentElement.style.justifyContent='center';">
+                            </a>
+                            <div class="product-info">
+                                <div class="product-category">${product.category}</div>
+                                <div class="product-title"><a href="product.html?id=${product.id}">${product.name}</a></div>
+                                <div class="product-price">${product.price.toLocaleString()} ₽</div>
+                                <div class="product-rating">${'★'.repeat(product.rating)}${'☆'.repeat(5-product.rating)}</div>
+                                <button class="add-to-cart" onclick="addToCart(${product.id})">В корзину</button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            }, 200);
+        }
+    });
+</script>
+</body>
+</html>
